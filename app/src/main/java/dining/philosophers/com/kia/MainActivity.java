@@ -1,13 +1,20 @@
 package dining.philosophers.com.kia;
 
+import android.app.Activity;
+import android.app.ActivityManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.support.v7.app.AppCompatActivity;
+import android.view.Gravity;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.ar.core.Anchor;
 import com.google.ar.core.ArCoreApk;
 import com.google.ar.core.Session;
 import com.google.ar.core.exceptions.UnavailableApkTooOldException;
@@ -16,28 +23,57 @@ import com.google.ar.core.exceptions.UnavailableDeviceNotCompatibleException;
 import com.google.ar.core.exceptions.UnavailableSdkTooOldException;
 import com.google.ar.core.exceptions.UnavailableUserDeclinedInstallationException;
 
+import android.widget.FrameLayout;
+import android.widget.Toast;
+
+import com.google.ar.core.Frame;
+import com.google.ar.core.Pose;
+import com.google.ar.sceneform.AnchorNode;
+import com.google.ar.sceneform.rendering.ModelRenderable;
+import com.google.ar.sceneform.ux.ArFragment;
+import com.google.ar.sceneform.ux.TransformableNode;
 
 public class MainActivity extends AppCompatActivity {
+
     private static final String TAG = MainActivity.class.getSimpleName();
+    private static final double MIN_OPENGL_VERSION = 3.0;
+
+    private final SnackbarHelper messageSnackbarHelper = new SnackbarHelper();
     private boolean mUserRequestedInstall = true;
     private Session mSession;
-    Button mStartButton;
-    private final SnackbarHelper messageSnackbarHelper = new SnackbarHelper();
+    private Button mStartButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (!checkIsSupportedDeviceOrFinish(this)) {
+            return;
+        }
+
         setContentView(R.layout.activity_main);
 
         mStartButton = findViewById(R.id.startGameButton);
-        mStartButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent playAreaIntent = new Intent(MainActivity.this, PlayAreaActivity.class);
-                startActivity(playAreaIntent);
-            }
+        mStartButton.setOnClickListener(view -> {
+            Intent playAreaIntent = new Intent(MainActivity.this, PlayAreaActivity.class);
+            startActivity(playAreaIntent);
         });
+
     }
+    public static boolean checkIsSupportedDeviceOrFinish(final Activity activity) {
+        String openGlVersionString =
+                ((ActivityManager) activity.getSystemService(Context.ACTIVITY_SERVICE))
+                        .getDeviceConfigurationInfo()
+                        .getGlEsVersion();
+        if (Double.parseDouble(openGlVersionString) < MIN_OPENGL_VERSION) {
+            Toast.makeText(activity, "Sceneform requires OpenGL ES 3.0 or later", Toast.LENGTH_LONG)
+                    .show();
+            activity.finish();
+            return false;
+        }
+        return true;
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -48,8 +84,8 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        String message=null;
-        Exception exception=null;
+        String message = null;
+        Exception exception = null;
         try {
             if (mSession == null) {
                 switch (ArCoreApk.getInstance().requestInstall(this, mUserRequestedInstall)) {
@@ -69,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "TODO: handle exception " + e, Toast.LENGTH_LONG)
                     .show();
             return;
-        }  catch (UnavailableArcoreNotInstalledException e) {
+        } catch (UnavailableArcoreNotInstalledException e) {
             message = "Please install ARCore";
             exception = e;
         } catch (UnavailableApkTooOldException e) {
@@ -92,7 +128,6 @@ public class MainActivity extends AppCompatActivity {
             return;
         } // Current catch statements.
     }
-
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] results) {
