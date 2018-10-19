@@ -5,16 +5,11 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
-import android.support.v7.app.AppCompatActivity;
-import android.view.Gravity;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.google.ar.core.Anchor;
 import com.google.ar.core.ArCoreApk;
 import com.google.ar.core.Session;
 import com.google.ar.core.exceptions.UnavailableApkTooOldException;
@@ -23,24 +18,14 @@ import com.google.ar.core.exceptions.UnavailableDeviceNotCompatibleException;
 import com.google.ar.core.exceptions.UnavailableSdkTooOldException;
 import com.google.ar.core.exceptions.UnavailableUserDeclinedInstallationException;
 
-import android.widget.FrameLayout;
-import android.widget.Toast;
-
-import com.google.ar.core.Frame;
-import com.google.ar.core.Pose;
-import com.google.ar.sceneform.AnchorNode;
-import com.google.ar.sceneform.rendering.ModelRenderable;
-import com.google.ar.sceneform.ux.ArFragment;
-import com.google.ar.sceneform.ux.TransformableNode;
-
 public class MainActivity extends AppCompatActivity {
 
-    private static final String TAG = MainActivity.class.getSimpleName();
     private static final double MIN_OPENGL_VERSION = 3.0;
-
     private final SnackbarHelper messageSnackbarHelper = new SnackbarHelper();
     private boolean mUserRequestedInstall = true;
     private Session mSession;
+    private static final String TAG = MainActivity.class.getSimpleName();
+
     private Button mStartButton;
 
     @Override
@@ -83,7 +68,25 @@ public class MainActivity extends AppCompatActivity {
             CameraPermissionHelper.requestCameraPermission(this);
             return;
         }
+        checkAppInstalled();
 
+        // Current catch statements.
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] results) {
+        if (!CameraPermissionHelper.hasCameraPermission(this)) {
+            Toast.makeText(this, "Camera permission is needed to run this application", Toast.LENGTH_LONG)
+                    .show();
+            if (!CameraPermissionHelper.shouldShowRequestPermissionRationale(this)) {
+                // Permission denied with checking "Do not ask again".
+                CameraPermissionHelper.launchPermissionSettings(this);
+            }
+            finish();
+        }
+    }
+
+    private void checkAppInstalled() {
         String message = null;
         Exception exception = null;
         try {
@@ -126,19 +129,6 @@ public class MainActivity extends AppCompatActivity {
             messageSnackbarHelper.showError(this, message);
             Log.e(TAG, "Exception creating session", exception);
             return;
-        } // Current catch statements.
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] results) {
-        if (!CameraPermissionHelper.hasCameraPermission(this)) {
-            Toast.makeText(this, "Camera permission is needed to run this application", Toast.LENGTH_LONG)
-                    .show();
-            if (!CameraPermissionHelper.shouldShowRequestPermissionRationale(this)) {
-                // Permission denied with checking "Do not ask again".
-                CameraPermissionHelper.launchPermissionSettings(this);
-            }
-            finish();
         }
     }
 }

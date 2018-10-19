@@ -1,24 +1,28 @@
 package dining.philosophers.com.kia;
 
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.widget.Toast;
 
 import com.google.ar.core.Anchor;
-import com.google.ar.core.Frame;
-import com.google.ar.core.Pose;
+import com.google.ar.core.Plane;
 import com.google.ar.core.Session;
+import com.google.ar.core.TrackingState;
 import com.google.ar.sceneform.AnchorNode;
+import com.google.ar.sceneform.Node;
+import com.google.ar.sceneform.math.Vector3;
 import com.google.ar.sceneform.rendering.ModelRenderable;
 import com.google.ar.sceneform.ux.ArFragment;
-import com.google.ar.sceneform.ux.TransformableNode;
 
 public class PlayAreaActivity extends AppCompatActivity {
 
     private ModelRenderable mAndyRederable;
     private ArFragment mPlayAreaFragment;
+
+    private Session mSession;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,36 +31,33 @@ public class PlayAreaActivity extends AppCompatActivity {
 
         mPlayAreaFragment = (ArFragment) getSupportFragmentManager().findFragmentById(R.id.playAreaFragment);
 
-        buildAndyRederable();
+        buildAndyRenderable();
 
         new Handler().postDelayed(this::generateAndyAtRandomPosition, 10000);
     }
 
-
-
     public void generateAndyAtRandomPosition() {
-
         Anchor anchor = null;
-
-        try {
-            Frame arFrame = mPlayAreaFragment.getArSceneView().getArFrame();
-            Pose pose = arFrame.getCamera().getPose();
-
-            anchor = new Session(this).createAnchor(pose);
-        } catch (Exception e) {
-            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+        mSession = mPlayAreaFragment.getArSceneView().getSession();
+        for(Plane plane: mSession.getAllTrackables(Plane.class)){
+            if(plane.getType()==Plane.Type.HORIZONTAL_UPWARD_FACING
+                    && plane.getTrackingState()== TrackingState.TRACKING){
+                anchor=plane.createAnchor(plane.getCenterPose());
+                Log.d("Plane anchor",plane.toString());
+                break;
+            }
         }
 
         AnchorNode anchorNode = new AnchorNode(anchor);
         anchorNode.setParent(mPlayAreaFragment.getArSceneView().getScene());
-
-        TransformableNode andy = new TransformableNode(mPlayAreaFragment.getTransformationSystem());
+        Node andy = new Node();
         andy.setParent(anchorNode);
         andy.setRenderable(mAndyRederable);
-        andy.select();
+        andy.setLocalPosition(new Vector3(1f,0,0.5f));
+        andy.setOnTapListener((hitTestResult ,motionEvent) -> andy.setEnabled(false));
     }
 
-    public void buildAndyRederable() {
+    public void buildAndyRenderable() {
         ModelRenderable.builder()
                 .setSource(this, R.raw.andy)
                 .build()
