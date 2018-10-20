@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "918611730374",
+    "firebase_url": "https://kia-prototype.firebaseio.com",
+    "project_id": "kia-prototype",
+    "storage_bucket": "kia-prototype.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:918611730374:android:24dee972cb9d8b06",
+        "android_client_info": {
+          "package_name": "dining.philosophers.com.kia"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "918611730374-q70jf1mbpdp9ihhha7gpsn1riqqgu47r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDHslHFYgi-_Zbg1r4r1OUpLQi98Z4ywK4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
