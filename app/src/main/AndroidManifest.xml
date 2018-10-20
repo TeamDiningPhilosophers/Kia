@@ -32,7 +32,8 @@
 
         <activity
             android:name=".MainActivity"
-            android:screenOrientation="locked">
+            android:screenOrientation="locked"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
