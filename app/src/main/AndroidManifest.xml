@@ -41,7 +41,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".PlayAreaActivity" />
-        <activity android:name=".ModelSelector"></activity>
     </application>
 
 </manifest>
