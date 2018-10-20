@@ -34,6 +34,10 @@ dependencies {
 
     //FireBase
     implementation 'com.google.firebase:firebase-core:16.0.4'
+    implementation 'com.google.firebase:firebase-database:16.0.3'
+    implementation "com.google.firebase:firebase-ml-vision:17.0.1"
+
+    implementation 'org.tensorflow:tensorflow-android:1.11.0'
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
@@ -42,50 +46,3 @@ dependencies {
 }
 
 apply plugin: 'com.google.gms.google-services'
-
-apply plugin: 'com.google.ar.sceneform.plugin'
-
-sceneform.asset('sampledata/models/ironman/ironman.obj',
-        'default',
-        'sampledata/models/ironman/ironman.sfa',
-        'res/raw/ironman')
-
-sceneform.asset('sampledata/models/column/column.obj',
-        'default',
-        'sampledata/models/column/column.sfa',
-        'sampledata/models/column/column')
-
-sceneform.asset('sampledata/models/statue/libertstatue.obj',
-        'default',
-        'sampledata/models/statue/libertstatue.sfa',
-        'sampledata/models/statue/libertstatue')
-
-sceneform.asset('sampledata/models/road/road.fbx',
-        'default',
-        'sampledata/models/road/road.sfa',
-        'sampledat/models/road/road')
-
-sceneform.asset('sampledata/models/road/road.obj',
-        'default',
-        'sampledata/models/road/road.sfa',
-        'sampledata/models/road/road')
-
-sceneform.asset('sampledata/models/minion/minion.fbx',
-        'default',
-        'sampledata/models/minion/minion.sfa',
-        'sampledata/models/minion/minion')
-
-sceneform.asset('sampledata/models/skull/skull.obj',
-        'default',
-        'sampledata/models/skull/skull.sfa',
-        'sampledata/models/skull/skull')
-
-sceneform.asset('sampledata/models/batman/batman.obj',
-        'default',
-        'sampledata/models/batman/batman.sfa',
-        'sampledata/models/batman/batman')
-
-sceneform.asset('sampledata/models/car/bmw.obj',
-        'default',
-        'sampledata/models/car/bmw.sfa',
-        'sampledata/models/car/bmw')

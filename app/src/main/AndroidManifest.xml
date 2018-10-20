@@ -29,11 +29,13 @@
         <meta-data
             android:name="com.google.ar.core"
             android:value="required" />
+        <meta-data
+            android:name="com.google.android.ar.API_KEY"
+            android:value="AIzaSyASTShnLluKLwn_9Zfjx1AjZ59Nx5VchVI" />
 
         <activity
             android:name=".MainActivity"
-            android:screenOrientation="locked"
-            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
+            android:screenOrientation="locked">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -41,6 +43,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".PlayAreaActivity" />
+        <activity android:name=".MultiplayerActivity"></activity>
     </application>
 
 </manifest>

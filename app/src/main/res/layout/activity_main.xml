@@ -8,6 +8,13 @@
         android:id="@+id/startGameButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
         android:text="Start Game" />
+
+    <Button
+        android:id="@+id/startMultiPlayer"
+        android:text="Start Multiplayer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

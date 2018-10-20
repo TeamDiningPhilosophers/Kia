@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -27,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
 
     private Button mStartButton;
+    private Button mMultiplayerButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +46,11 @@ public class MainActivity extends AppCompatActivity {
             startActivity(playAreaIntent);
         });
 
+        mMultiplayerButton = findViewById(R.id.startMultiPlayer);
+        mMultiplayerButton.setOnClickListener(view -> {
+            Intent multiplayerIntent = new Intent(MainActivity.this, MultiplayerActivity.class);
+            startActivity(multiplayerIntent);
+        });
     }
     public static boolean checkIsSupportedDeviceOrFinish(final Activity activity) {
         String openGlVersionString =
