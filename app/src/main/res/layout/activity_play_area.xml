@@ -1,13 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <fragment
-        android:name="com.google.ar.sceneform.ux.ArFragment"
-        android:id="@+id/playAreaFragment"
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
 
-</FrameLayout>
+        <fragment
+            android:id="@+id/playAreaFragment"
+            android:name="com.google.ar.sceneform.ux.ArFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </FrameLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id = "@+id/hitText"
+        android:layout_centerHorizontal="true"
+        android:text="Hit"
+        android:textColor="@android:color/white" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id = "@+id/missText"
+        android:layout_centerHorizontal="true"
+        android:text="Miss"
+        android:textColor="@android:color/holo_red_dark" />
+
+</RelativeLayout>

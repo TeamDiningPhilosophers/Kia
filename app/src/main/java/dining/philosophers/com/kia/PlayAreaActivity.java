@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.ar.core.Anchor;
@@ -35,11 +36,17 @@ public class PlayAreaActivity extends AppCompatActivity {
     private Node andy;
     private int hit=0;
     private int miss=0;
+    private TextView hitTextView;
+    private String hitText="";
+    private TextView missTextView;
+    private String missText="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play_area);
+        hitTextView = findViewById(R.id.hitText);
+        missTextView = findViewById(R.id.missText);
 
         mPlayAreaFragment = (ArFragment) getSupportFragmentManager().findFragmentById(R.id.playAreaFragment);
         Log.d("Play Area",mPlayAreaFragment.getArSceneView().getScene().toString());
@@ -78,6 +85,8 @@ public class PlayAreaActivity extends AppCompatActivity {
         andy.setOnTapListener((hitTestResult ,motionEvent) -> {
             andy.setEnabled(false);
             hit++;
+            String hitText = String.valueOf(hit);
+            hitTextView.setText(hitText);
         });
     }
 
@@ -97,8 +106,10 @@ public class PlayAreaActivity extends AppCompatActivity {
     }
     public void placeAndyAtRandom(){
         if(andy!=null){
-            if(andy.isEnabled()==true){
+            if(andy.isEnabled()){
                 miss++;
+                missText = String.valueOf(miss);
+                missTextView.setText(missText);
             }
             andy.setEnabled(true);
             //mPlayAreaFragment.getArSceneView().getX
