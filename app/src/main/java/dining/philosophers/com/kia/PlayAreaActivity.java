@@ -1,9 +1,8 @@
 package dining.philosophers.com.kia;
 
-import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
@@ -16,7 +15,6 @@ import com.google.ar.core.Session;
 import com.google.ar.core.TrackingState;
 import com.google.ar.sceneform.AnchorNode;
 import com.google.ar.sceneform.Node;
-import com.google.ar.sceneform.math.Quaternion;
 import com.google.ar.sceneform.math.Vector3;
 import com.google.ar.sceneform.rendering.ModelRenderable;
 import com.google.ar.sceneform.ux.ArFragment;
@@ -32,17 +30,17 @@ public class PlayAreaActivity extends AppCompatActivity {
     private ModelRenderable mAndyRederable;
     private ArFragment mPlayAreaFragment;
     private Session mSession;
-    private ScheduledExecutorService schedule = Executors.newSingleThreadScheduledExecutor();
+    private ScheduledExecutorService schedule= Executors.newSingleThreadScheduledExecutor();
     private ScheduledFuture schedulerHandler;
     private Anchor anchor;
     private AnchorNode anchorNode;
     private Node andy;
-    private int hit = 0;
-    private int miss = 0;
+    private int hit=0;
+    private int miss=0;
     private TextView hitTextView;
-    private String hitText = "";
+    private String hitText="";
     private TextView missTextView;
-    private String missText = "";
+    private String missText="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,12 +50,12 @@ public class PlayAreaActivity extends AppCompatActivity {
         missTextView = findViewById(R.id.missText);
 
         mPlayAreaFragment = (ArFragment) getSupportFragmentManager().findFragmentById(R.id.playAreaFragment);
-        Log.d("Play Area", mPlayAreaFragment.getArSceneView().getScene().toString());
+        Log.d("Play Area",mPlayAreaFragment.getArSceneView().getScene().toString());
         buildAndyRenderable();
 
         new Handler().postDelayed(this::generateAndy, 10000);
         // scheduling the task at fixed rate
-        schedulerHandler = schedule.scheduleAtFixedRate(() -> runOnUiThread(() -> placeAndyAtRandom()), 3, 3, TimeUnit.SECONDS);
+        schedulerHandler=schedule.scheduleAtFixedRate(() -> runOnUiThread(() -> placeAndyAtRandom()),3,3, TimeUnit.SECONDS);
 
     }
 
@@ -70,11 +68,11 @@ public class PlayAreaActivity extends AppCompatActivity {
     public void generateAndy() {
         anchor = null;
         mSession = mPlayAreaFragment.getArSceneView().getSession();
-        for (Plane plane : mSession.getAllTrackables(Plane.class)) {
-            if (plane.getType() == Plane.Type.HORIZONTAL_UPWARD_FACING
-                    && plane.getTrackingState() == TrackingState.TRACKING) {
-                anchor = plane.createAnchor(plane.getCenterPose());
-                Log.d("Plane anchor", plane.toString());
+        for(Plane plane: mSession.getAllTrackables(Plane.class)){
+            if(plane.getType()==Plane.Type.HORIZONTAL_UPWARD_FACING
+                    && plane.getTrackingState()== TrackingState.TRACKING){
+                anchor=plane.createAnchor(plane.getCenterPose());
+                Log.d("Plane anchor",plane.toString());
                 break;
             }
         }
@@ -84,20 +82,18 @@ public class PlayAreaActivity extends AppCompatActivity {
         andy = new Node();
         andy.setParent(anchorNode);
         andy.setRenderable(mAndyRederable);
-        andy.setLocalPosition(new Vector3(0f, 0, 0f));
-        andy.setLocalRotation(new Quaternion(0, -0.25f, 0, 0));
-        andy.setOnTapListener((hitTestResult, motionEvent) -> {
+        andy.setLocalPosition(new Vector3(0f,0,0f));
+        andy.setOnTapListener((hitTestResult ,motionEvent) -> {
             andy.setEnabled(false);
             hit++;
-            hitText = String.valueOf(hit);
+            String hitText = String.valueOf(hit);
             hitTextView.setText(hitText);
-
         });
     }
 
     public void buildAndyRenderable() {
         ModelRenderable.builder()
-                .setSource(this, R.raw.andy)
+                .setSource(this, Uri.parse("LibertyStatue.sfb"))
                 .build()
                 .thenAccept(modelRenderable -> mAndyRederable = modelRenderable)
                 .exceptionally(
@@ -109,37 +105,18 @@ public class PlayAreaActivity extends AppCompatActivity {
                             return null;
                         });
     }
-
-    public void placeAndyAtRandom() {
-        if (andy != null) {
-            if (andy.isEnabled()) {
+    public void placeAndyAtRandom(){
+        if(andy!=null){
+            if(andy.isEnabled()){
                 miss++;
                 missText = String.valueOf(miss);
                 missTextView.setText(missText);
-                if (miss == 5) {
-                    schedulerHandler.cancel(true);
-                    AlertDialog.Builder builder;
-                    builder = new AlertDialog.Builder(this);
-                    builder.setTitle("Game Over")
-                            .setCancelable(false)
-                            .setMessage("Hits : " + String.valueOf(hit))
-                            .setPositiveButton("Restart", (dialog, which) -> {
-                                Intent intent = new Intent(PlayAreaActivity.this, PlayAreaActivity.class);
-                                startActivity(intent);
-                                finish();
-                            })
-                            .setNegativeButton("Quit", (dialog, which) -> {
-                                finish();
-                            })
-                            .show();
-                }
             }
             andy.setEnabled(true);
             //mPlayAreaFragment.getArSceneView().getX
-            andy.setLocalPosition(new Vector3(randFloat(-0.3f, 0.8f), 0, randFloat(-0.8f, 0.8f)));
+            andy.setLocalPosition(new Vector3(randFloat(-0.3f,0.8f),0,randFloat(-0.8f,0.8f)));
         }
     }
-
     public static float randFloat(float min, float max) {
         Random rand = new Random();
         float result = rand.nextFloat() * (max - min) + min;

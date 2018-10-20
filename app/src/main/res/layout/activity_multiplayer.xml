@@ -33,6 +33,11 @@
             android:layout_height="wrap_content"
             android:text="Shoot" />
 
+        <TextView
+            android:id="@+id/healthTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
     </LinearLayout>
 
 
