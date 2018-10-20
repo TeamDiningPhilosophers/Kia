@@ -4,7 +4,6 @@
     package="dining.philosophers.com.kia">
 
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.INTERNET"/>
     <!--
          This tag indicates that this application requires ARCore. This results in the application
         only being visible in the Google Play Store on devices that support ARCore.
@@ -19,7 +18,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppThemeNoActionBar"
+        android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
 
         <!--
@@ -30,6 +29,9 @@
         <meta-data
             android:name="com.google.ar.core"
             android:value="required" />
+        <meta-data
+            android:name="com.google.android.ar.API_KEY"
+            android:value="AIzaSyASTShnLluKLwn_9Zfjx1AjZ59Nx5VchVI" />
 
         <activity
             android:name=".MainActivity"
@@ -40,8 +42,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".PlayAreaActivity"
-            android:theme="@style/PlayAreaTheme"></activity>
+        <activity android:name=".PlayAreaActivity" />
+        <activity android:name=".MultiplayerActivity"></activity>
     </application>
 
 </manifest>

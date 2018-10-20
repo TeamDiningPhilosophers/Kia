@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <fragment
+        android:id="@+id/sceneform_fragment"
+        android:name="dining.philosophers.com.kia.CustomArFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Button
+            android:id="@+id/clear_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Clear" />
+
+        <Button
+            android:id="@+id/resolve_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Resolve" />
+
+        <Button
+            android:id="@+id/shootButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Shoot" />
+
+    </LinearLayout>
+
+
+</RelativeLayout>

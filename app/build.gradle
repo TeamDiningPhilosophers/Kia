@@ -34,6 +34,10 @@ dependencies {
 
     //FireBase
     implementation 'com.google.firebase:firebase-core:16.0.4'
+    implementation 'com.google.firebase:firebase-database:16.0.3'
+    implementation "com.google.firebase:firebase-ml-vision:17.0.1"
+
+    implementation 'org.tensorflow:tensorflow-android:1.11.0'
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
