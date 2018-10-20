@@ -1,5 +1,6 @@
 package dining.philosophers.com.kia;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -92,7 +93,7 @@ public class PlayAreaActivity extends AppCompatActivity {
 
     public void buildAndyRenderable() {
         ModelRenderable.builder()
-                .setSource(this, R.raw.andy)
+                .setSource(this, Uri.parse("LibertyStatue.sfb"))
                 .build()
                 .thenAccept(modelRenderable -> mAndyRederable = modelRenderable)
                 .exceptionally(
