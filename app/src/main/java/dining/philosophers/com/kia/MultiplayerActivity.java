@@ -12,8 +12,8 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.ar.core.Anchor;
 import com.google.ar.core.HitResult;
@@ -22,12 +22,12 @@ import com.google.ar.core.Pose;
 import com.google.ar.core.Session;
 import com.google.ar.sceneform.AnchorNode;
 import com.google.ar.sceneform.FrameTime;
+import com.google.ar.sceneform.Node;
 import com.google.ar.sceneform.math.Quaternion;
 import com.google.ar.sceneform.math.Vector3;
 import com.google.ar.sceneform.rendering.ModelRenderable;
 import com.google.ar.sceneform.rendering.Renderable;
 import com.google.ar.sceneform.ux.ArFragment;
-import com.google.ar.sceneform.ux.TransformableNode;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -66,13 +66,16 @@ public class MultiplayerActivity extends AppCompatActivity {
     private TFMobile tfMobile;
     private Game game;
 
-    private Button shootButton;
     private TextView tvHealth;
 
     private DatabaseReference gameRef = FirebaseDatabase.getInstance().getReference("games");
     private DatabaseReference gameWorldObjectsRef;
     private DatabaseReference gamePlayersRef;
     private DatabaseReference gameHitsRef;
+    private boolean isMapSet=false;
+    private Button setMapButton;
+    private ImageView crosshair;
+    private ImageView shootButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,39 +84,50 @@ public class MultiplayerActivity extends AppCompatActivity {
 
         fragment = (CustomArFragment) getSupportFragmentManager().findFragmentById(R.id.sceneform_fragment);
         fragment.getPlaneDiscoveryController().hide();
+        setMapButton= findViewById(R.id.setMapButton);
+        crosshair=findViewById(R.id.iv_crosshair);
+        shootButton = findViewById(R.id.shoot_button);
+
+        setMapButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isMapSet=true;
+                setMapButton.setVisibility(View.GONE);
+                crosshair.setVisibility(View.VISIBLE);
+                shootButton.setVisibility(View.VISIBLE);
+            }
+        });
 
         game = new Game();
         tfMobile = new TFMobile(this);
 
         tvHealth = findViewById(R.id.healthTextView);
-        Button clearButton = findViewById(R.id.clear_button);
-        clearButton.setOnClickListener(view -> setCloudAnchor(null));
 
         storageManager = new StorageManager(this);
 
         fragment.setOnTapArPlaneListener((HitResult hitResult, Plane plane, MotionEvent motionEvent) -> {
+            if (!isMapSet) {
 
-                    Anchor localAnchor = hitResult.createAnchor();
+                Anchor localAnchor = hitResult.createAnchor();
 
-                    if (appAnchorState == AppAnchorState.NONE) {
+                if (appAnchorState == AppAnchorState.NONE) {
 
-                        if (plane.getType() != Plane.Type.HORIZONTAL_UPWARD_FACING) {
-                            return;
-                        }
-
-                        Anchor newAnchor = fragment.getArSceneView().getSession().hostCloudAnchor(localAnchor);
-                        setCloudAnchor(newAnchor);
-
-                        appAnchorState = AppAnchorState.HOSTING;
-                        snackbarHelper.showMessage(this, "Now hosting anchor...");
-
-                        placeObject(fragment, cloudAnchor, Uri.parse("LibertyStatue.sfb"), false);
-                    } else {
-                        placeObject(fragment, localAnchor, Uri.parse("LibertyStatue.sfb"), true);
+                    if (plane.getType() != Plane.Type.HORIZONTAL_UPWARD_FACING) {
+                        return;
                     }
-                }
 
-        );
+                    Anchor newAnchor = fragment.getArSceneView().getSession().hostCloudAnchor(localAnchor);
+                    setCloudAnchor(newAnchor);
+
+                    appAnchorState = AppAnchorState.HOSTING;
+                    snackbarHelper.showMessage(this, "Now hosting anchor...");
+
+                    placeObject(fragment, cloudAnchor, Uri.parse("LibertyStatue.sfb"), false);
+                } else {
+                    placeObject(fragment, localAnchor, Uri.parse("LibertyStatue.sfb"), true);
+                }
+            }
+        });
 
         fragment.getArSceneView().getScene().setOnUpdateListener(this::onUpdateFrame);
 
@@ -129,7 +143,6 @@ public class MultiplayerActivity extends AppCompatActivity {
 
         });
 
-        shootButton = findViewById(R.id.shootButton);
         shootButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -283,13 +296,11 @@ public class MultiplayerActivity extends AppCompatActivity {
 
     private void addNodeToScene(ArFragment fragment, Anchor anchor, Renderable renderable, boolean doSync) {
         AnchorNode anchorNode = new AnchorNode(anchor);
-        TransformableNode node = new TransformableNode(fragment.getTransformationSystem());
+        Node node = new Node();
+        renderable.setShadowCaster(false);
         node.setRenderable(renderable);
-
         node.setParent(anchorNode);
         fragment.getArSceneView().getScene().addChild(anchorNode);
-        node.select();
-
         if (doSync) {
             syncNewObject(anchorNode);
         }
@@ -306,7 +317,7 @@ public class MultiplayerActivity extends AppCompatActivity {
                     }
                     Session session = fragment.getArSceneView().getSession();
                     Anchor anchor = session.createAnchor(new Pose(getArray(worldObject.position), getArray(worldObject.rotation)));
-                    placeObject(fragment, anchor, Uri.parse("Pillar.sfb"), false);
+                    placeObject(fragment, anchor, Uri.parse("LibertyStatue.sfb"), false);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
