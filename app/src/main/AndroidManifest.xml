@@ -40,7 +40,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".PlayAreaActivity"></activity>
+        <activity android:name=".PlayAreaActivity" />
+        <activity android:name=".ModelSelector"></activity>
     </application>
 
 </manifest>
