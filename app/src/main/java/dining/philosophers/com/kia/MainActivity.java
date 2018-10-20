@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
         mStartButton.setOnClickListener(view -> {
             Intent playAreaIntent = new Intent(MainActivity.this, PlayAreaActivity.class);
             startActivity(playAreaIntent);
+            finish();
         });
 
     }
