@@ -7,6 +7,5 @@ An android game built using Google's ARCore and TensorFlow Lite(image recognitio
                         of Augmented Reality. Choose your own play area and mash up the moles which get generated randomly on
                         the chosen area.
 
-2. Multiplayer Mode : Sorry guys, only two people allowed in this mode. This mode enables two players to shoot each other
-                      and try to reduce each other's health. This game is different from the others because you get to choose
-                      your own map, build your own obstacles (using Augmented Reality).
+2. Multiplayer Mode : This mode enables two players to shoot each other and try to reduce each other's health. This game is                           different from the others because you get to choose your own map, build your own obstacles (using
+                      Augmented Reality).
