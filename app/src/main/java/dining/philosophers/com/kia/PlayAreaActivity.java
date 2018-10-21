@@ -93,7 +93,7 @@ public class PlayAreaActivity extends AppCompatActivity {
 
     public void buildAndyRenderable() {
         ModelRenderable.builder()
-                .setSource(this, Uri.parse("LibertyStatue.sfb"))
+                .setSource(this, Uri.parse("andy.sfb"))
                 .build()
                 .thenAccept(modelRenderable -> mAndyRederable = modelRenderable)
                 .exceptionally(

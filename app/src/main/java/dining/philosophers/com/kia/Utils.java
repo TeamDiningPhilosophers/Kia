@@ -26,4 +26,20 @@ public class Utils {
         outputStream.close();
         bmp.recycle();
     }
+    static void playReload(Context context) {
+        MediaPlayer mp = MediaPlayer.create(context, R.raw.reload);
+        mp.start();
+        mp.setOnCompletionListener(MediaPlayer::release);
+    }
+    static void playFireEmpty(Context context) {
+        MediaPlayer mp = MediaPlayer.create(context, R.raw.fire_empty);
+        mp.start();
+        mp.setOnCompletionListener(MediaPlayer::release);
+    }
+
+    static void playFireNormal(Context context) {
+        MediaPlayer mp = MediaPlayer.create(context, R.raw.fire_normal);
+        mp.start();
+        mp.setOnCompletionListener(MediaPlayer::release);
+    }
 }

@@ -1,11 +1,16 @@
 package dining.philosophers.com.kia;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -42,8 +47,13 @@ import dining.philosophers.com.kia.GameModels.GameHit;
 import dining.philosophers.com.kia.GameModels.GamePlayer;
 import dining.philosophers.com.kia.GameModels.GameWorldObject;
 import dining.philosophers.com.kia.ml.TFMobile;
+import dining.philosophers.com.kia.Utils;
+
+import static dining.philosophers.com.kia.Utils.playReload;
 
 public class MultiplayerActivity extends AppCompatActivity {
+
+    private boolean isReloading;
 
     private enum AppAnchorState {
         NONE,
@@ -67,15 +77,17 @@ public class MultiplayerActivity extends AppCompatActivity {
     private Game game;
 
     private TextView tvHealth;
+    private Button setMapButton;
+    private ImageView crosshair;
+    private ImageView shootButton;
+    private TextView tvGameStatus;
+
 
     private DatabaseReference gameRef = FirebaseDatabase.getInstance().getReference("games");
     private DatabaseReference gameWorldObjectsRef;
     private DatabaseReference gamePlayersRef;
     private DatabaseReference gameHitsRef;
-    private boolean isMapSet=false;
-    private Button setMapButton;
-    private ImageView crosshair;
-    private ImageView shootButton;
+    private boolean isMapSet = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,14 +96,14 @@ public class MultiplayerActivity extends AppCompatActivity {
 
         fragment = (CustomArFragment) getSupportFragmentManager().findFragmentById(R.id.sceneform_fragment);
         fragment.getPlaneDiscoveryController().hide();
-        setMapButton= findViewById(R.id.setMapButton);
-        crosshair=findViewById(R.id.iv_crosshair);
+        setMapButton = findViewById(R.id.setMapButton);
+        crosshair = findViewById(R.id.iv_crosshair);
         shootButton = findViewById(R.id.shoot_button);
 
         setMapButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                isMapSet=true;
+                isMapSet = true;
                 setMapButton.setVisibility(View.GONE);
                 crosshair.setVisibility(View.VISIBLE);
                 shootButton.setVisibility(View.VISIBLE);
@@ -102,6 +114,7 @@ public class MultiplayerActivity extends AppCompatActivity {
         tfMobile = new TFMobile(this);
 
         tvHealth = findViewById(R.id.healthTextView);
+        tvGameStatus = findViewById(R.id.gameStatusTextView);
 
         storageManager = new StorageManager(this);
 
@@ -124,7 +137,7 @@ public class MultiplayerActivity extends AppCompatActivity {
 
                     placeObject(fragment, cloudAnchor, Uri.parse("LibertyStatue.sfb"), false);
                 } else {
-                    placeObject(fragment, localAnchor, Uri.parse("LibertyStatue.sfb"), true);
+                    placeObject(fragment, localAnchor, Uri.parse("Pillar.sfb"), true);
                 }
             }
         });
@@ -146,6 +159,12 @@ public class MultiplayerActivity extends AppCompatActivity {
         shootButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (isReloading) {
+                    dining.philosophers.com.kia.Utils.playFireEmpty(MultiplayerActivity.this);
+                    return;
+                }
+                isReloading = true;
+                dining.philosophers.com.kia.Utils.playFireNormal(MultiplayerActivity.this);
                 fragment.captureBitmap(new CustomArFragment.OnBitmapCapturedListener() {
                     @Override
                     public void onBitmapCaptured(Bitmap bitmap) {
@@ -167,7 +186,7 @@ public class MultiplayerActivity extends AppCompatActivity {
         player.playerId = getDeviceId();
         player.health = 100;
 
-        gameRef.child(gameId).child("winnerId").setValue("");
+        gameRef.child(gameId).child("looserId").setValue("");
 
         gamePlayersRef.child(getDeviceId()).setValue(player);
         gamePlayersRef.child(getDeviceId()).addValueEventListener(new ValueEventListener() {
@@ -182,40 +201,34 @@ public class MultiplayerActivity extends AppCompatActivity {
             }
         });
 
-//        gameRef.child(gameId).child("winnerId").addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                String winnerId = dataSnapshot.getValue(String.class);
-//                if (winnerId == null || winnerId.equals("") || winnerId.equals(" ")) {
-//                    btnShoot.setVisibility(View.VISIBLE);
-//                    tvGameStatus.setVisibility(View.GONE);
-//                    bloodFrame.setVisibility(View.GONE);
-//                    findViewById(R.id.reset_button).setVisibility(View.GONE);
-//                    findViewById(R.id.iv_crosshair).setVisibility(View.VISIBLE);
-//                    return;
-//                }
-//
-//                if (winnerId.equals("reset")) {
-//                    findViewById(R.id.reset_button).setVisibility(View.VISIBLE);
-//                    return;
-//                }
-//
-//                btnShoot.setVisibility(View.GONE);
-//                tvGameStatus.setVisibility(View.VISIBLE);
-//                findViewById(R.id.reset_button).setVisibility(View.VISIBLE);
-//                findViewById(R.id.iv_crosshair).setVisibility(View.GONE);
-//                if (winnerId.equals(getDeviceId())) {
-//                    tvGameStatus.setText("WINNER WINNER CHICKEN DINNER");
-//                } else  {
-//                    tvGameStatus.setText("LOST!");
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//
-//            }
-//        });
+        gameRef.child(gameId).child("looserId").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String looserId = dataSnapshot.getValue(String.class);
+                if (looserId == null || looserId.equals("") || looserId.equals(" ")) {
+                    findViewById(R.id.iv_crosshair).setVisibility(View.VISIBLE);
+                    tvGameStatus.setVisibility(View.GONE);
+                    return;
+                }
+
+                if (!looserId.equals(getDeviceId())) {
+                    crosshair.setVisibility(View.GONE);
+                    tvGameStatus.setText("AAAP JEET GAYE, AUR KHELE AUR EXPERT BANNE");
+                    tvGameStatus.setTextColor(Color.GREEN);
+                    tvGameStatus.setVisibility(View.VISIBLE);
+                } else {
+                    crosshair.setVisibility(View.GONE);
+                    tvGameStatus.setText("AAP HAAR GAYEE, NAYI GAME LAGAYE AUR BADAL LE");
+                    tvGameStatus.setTextColor(Color.RED);
+                    tvGameStatus.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private void onHitAttempted(boolean isHit) {
@@ -225,7 +238,12 @@ public class MultiplayerActivity extends AppCompatActivity {
             if (gameHitsRef != null) {
                 gameHitsRef.push().setValue(hit);
             }
+
         }
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+            dining.philosophers.com.kia.Utils.playReload(this);
+            isReloading = false;
+        }, 1000);
     }
 
     private void updateGameState(GamePlayer player) {
@@ -234,7 +252,6 @@ public class MultiplayerActivity extends AppCompatActivity {
         }
         currentHealth = player.health;
         tvHealth.setText(String.valueOf(player.health));
-
 //        healthProgress.setProgress(currentHealth);
 
         if (currentHealth <= 30) {
@@ -306,6 +323,45 @@ public class MultiplayerActivity extends AppCompatActivity {
         }
     }
 
+    private void addHealthSyncing() {
+        gameHitsRef.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                try {
+                    GameHit hit = dataSnapshot.getValue(GameHit.class);
+                    if (!hit.hitBy.equals(getDeviceId())) {
+                        int newHealth = currentHealth - 10;
+                        if (newHealth < 0) {
+                            newHealth = 0;
+                        }
+                        gamePlayersRef.child(getDeviceId()).child("health").setValue((newHealth));
+                        if (newHealth == 0) {
+                            gameRef.child(gameId).child("looserId").setValue(getDeviceId());
+                        }
+                    }
+                } catch (Exception e) {
+                    Log.e("MultiplayerAcitivity", e.getMessage());
+                }
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
+    }
+
     private void addChildSyncing() {
         gameWorldObjectsRef.addChildEventListener(new ChildEventListener() {
             @Override
@@ -317,7 +373,7 @@ public class MultiplayerActivity extends AppCompatActivity {
                     }
                     Session session = fragment.getArSceneView().getSession();
                     Anchor anchor = session.createAnchor(new Pose(getArray(worldObject.position), getArray(worldObject.rotation)));
-                    placeObject(fragment, anchor, Uri.parse("LibertyStatue.sfb"), false);
+                    placeObject(fragment, anchor, Uri.parse("Pillar.sfb"), false);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -382,6 +438,7 @@ public class MultiplayerActivity extends AppCompatActivity {
             snackbarHelper.showMessage(this, "Now Resolving Anchor...");
             appAnchorState = AppAnchorState.RESOLVING;
             addChildSyncing();
+            addHealthSyncing();
         });
     }
 
@@ -412,6 +469,7 @@ public class MultiplayerActivity extends AppCompatActivity {
                             shortCode);
 
                     addChildSyncing();
+                    addHealthSyncing();
                 });
                 appAnchorState = AppAnchorState.HOSTED;
             }

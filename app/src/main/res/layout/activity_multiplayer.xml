@@ -23,15 +23,15 @@
         android:visibility="gone" />
 
     <ImageView
+        android:id="@+id/shoot_button"
         android:layout_width="150dp"
         android:layout_height="150dp"
-        android:src="@drawable/shoot"
-        android:layout_gravity="bottom|center_horizontal"
-        android:id="@+id/shoot_button"
-        android:visibility="gone"
-        android:scaleType="centerInside"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="bottom|center_horizontal"
+        android:scaleType="centerInside"
+        android:src="@drawable/shoot"
+        android:visibility="gone" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -48,7 +48,8 @@
         <TextView
             android:id="@+id/healthTextView"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:textSize="18sp" />
 
     </LinearLayout>
 
@@ -56,11 +57,18 @@
         android:id="@+id/setMapButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="53dp"
         android:text="Set Map" />
 
+    <TextView
+        android:id="@+id/gameStatusTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:textSize="32dp"
+        android:textStyle="bold"
+        android:visibility="gone" />
 
 </RelativeLayout>
