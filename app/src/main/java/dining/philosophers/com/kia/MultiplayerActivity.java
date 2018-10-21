@@ -136,6 +136,8 @@ public class MultiplayerActivity extends AppCompatActivity {
                     snackbarHelper.showMessage(this, "Now hosting anchor...");
 
                     placeObject(fragment, cloudAnchor, Uri.parse("LibertyStatue.sfb"), false);
+
+
                 } else {
                     placeObject(fragment, localAnchor, Uri.parse("Pillar.sfb"), true);
                 }
@@ -439,6 +441,7 @@ public class MultiplayerActivity extends AppCompatActivity {
             appAnchorState = AppAnchorState.RESOLVING;
             addChildSyncing();
             addHealthSyncing();
+            setMapButton.setVisibility(View.VISIBLE);
         });
     }
 
@@ -470,6 +473,7 @@ public class MultiplayerActivity extends AppCompatActivity {
 
                     addChildSyncing();
                     addHealthSyncing();
+                    setMapButton.setVisibility(View.VISIBLE);
                 });
                 appAnchorState = AppAnchorState.HOSTED;
             }

@@ -45,13 +45,16 @@
             android:layout_height="wrap_content"
             android:text="Resolve" />
 
-        <TextView
-            android:id="@+id/healthTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="18sp" />
-
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/healthTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="100"
+        android:textSize="24sp"
+        android:textStyle="bold" />
 
     <Button
         android:id="@+id/setMapButton"
@@ -60,6 +63,7 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="53dp"
+        android:visibility="gone"
         android:text="Set Map" />
 
     <TextView
