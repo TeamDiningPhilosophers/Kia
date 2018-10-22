@@ -1,7 +1,6 @@
 package dining.philosophers.com.kia;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
@@ -47,14 +46,10 @@ import dining.philosophers.com.kia.GameModels.GameHit;
 import dining.philosophers.com.kia.GameModels.GamePlayer;
 import dining.philosophers.com.kia.GameModels.GameWorldObject;
 import dining.philosophers.com.kia.ml.TFMobile;
-import dining.philosophers.com.kia.Utils;
-
-import static dining.philosophers.com.kia.Utils.playReload;
 
 public class MultiplayerActivity extends AppCompatActivity {
 
     private boolean isReloading;
-
     private enum AppAnchorState {
         NONE,
         HOSTING,
